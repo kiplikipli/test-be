@@ -15,6 +15,7 @@ interface JwtPayload {
   email: string;
   roles: Role[];
   exp: number;
+  employeeId: string | null;
 }
 
 @Injectable()
@@ -78,6 +79,7 @@ export class AuthService {
       email: user.email,
       roles: user.roles,
       exp: Math.floor(Date.now() / 1000) + this.tokenTtlSeconds,
+      employeeId: user.employeeId ?? null,
     };
 
     const base64Header = Buffer.from(JSON.stringify(header)).toString('base64url');
@@ -126,6 +128,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       roles: user.roles,
+      employeeId: user.employeeId ?? null,
     };
   }
 }

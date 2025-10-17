@@ -18,6 +18,9 @@ export class User {
   @Column({ type: 'simple-array' })
   roles!: Role[];
 
+  @Column({ nullable: true })
+  employeeId!: string | null;
+
   @BeforeInsert()
   @BeforeUpdate()
   async ensurePasswordHash(): Promise<void> {
