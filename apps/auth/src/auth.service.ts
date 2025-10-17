@@ -8,6 +8,7 @@ import { AuthenticatedUser, Role } from '@app/common';
 
 import { LoginDto } from './dto/login.dto';
 import { User } from './entities/user.entity';
+import { hashPassword, isPasswordHash, verifyPassword } from './utils/password-hash';
 
 interface JwtPayload {
   sub: string;
@@ -34,8 +35,21 @@ export class AuthService {
   async login(dto: LoginDto): Promise<{ accessToken: string; user: AuthenticatedUser }> {
     const user = await this.usersRepository.findOne({ where: { email: dto.email } });
 
-    if (!user || user.password !== dto.password) {
+    if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const passwordIsValid = isPasswordHash(user.password)
+      ? await verifyPassword(dto.password, user.password)
+      : user.password === dto.password;
+
+    if (!passwordIsValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (!isPasswordHash(user.password)) {
+      user.password = await hashPassword(user.password);
+      await this.usersRepository.save(user);
     }
 
     const token = this.signToken(user);
