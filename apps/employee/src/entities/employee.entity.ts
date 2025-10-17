@@ -1,24 +1,33 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { Role } from '@app/common';
+import { ProfileChangeLog } from './profile-change-log.entity';
 
-@Entity({ name: 'employees' })
-export class Employee {
+@Entity({ name: 'employee_profiles' })
+export class EmployeeProfile {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
-  firstName!: string;
-
-  @Column()
-  lastName!: string;
-
   @Column({ unique: true })
-  email!: string;
+  workEmail!: string;
+
+  @Column()
+  name!: string;
 
   @Column({ nullable: true })
-  firebaseToken?: string;
+  phone?: string | null;
 
-  @Column({ type: 'simple-array', default: Role.EMPLOYEE })
-  roles!: Role[];
+  @Column({ nullable: true })
+  position?: string | null;
+
+  @Column({ nullable: true })
+  photoUrl?: string | null;
+
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
+
+  @OneToMany(() => ProfileChangeLog, (log) => log.employee)
+  changeLogs?: ProfileChangeLog[];
 }
