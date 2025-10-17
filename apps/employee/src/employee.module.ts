@@ -12,19 +12,19 @@ import { EmployeeSelfController } from './employee-self.controller';
 import { EmployeeService } from './employee.service';
 import { EmployeeProfile } from './entities/employee.entity';
 import { ProfileChangeLog } from './entities/profile-change-log.entity';
-import { FirebaseAdminService } from './firebase/firebase-admin.service';
+import { FirebaseModule } from './firebase/firebase.module';
 import { PhotoStorageService } from './storage/photo-storage.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     DatabaseModule.forRoot(),
+    FirebaseModule,
     TypeOrmModule.forFeature([EmployeeProfile, ProfileChangeLog]),
   ],
   controllers: [EmployeeAdminController, EmployeeSelfController, EmployeeRpcController],
   providers: [
     EmployeeService,
-    FirebaseAdminService,
     PhotoStorageService,
     JwtTcpGuard,
     RolesGuard,
