@@ -10,7 +10,7 @@ describe('AuthController (e2e)', () => {
   const authServiceMock: Partial<AuthService> = {
     login: jest.fn().mockResolvedValue({
       accessToken: 'test-token',
-      user: { id: '1', email: 'tester@example.com', roles: [] },
+      user: { id: '1', email: 'tester@example.com', roles: [], employeeId: null },
     }),
     validateToken: jest.fn(),
   };
@@ -37,7 +37,7 @@ describe('AuthController (e2e)', () => {
 
     expect(response.body).toEqual({
       accessToken: 'test-token',
-      user: { id: '1', email: 'tester@example.com', roles: [] },
+      user: { id: '1', email: 'tester@example.com', roles: [], employeeId: null },
     });
   });
 });
