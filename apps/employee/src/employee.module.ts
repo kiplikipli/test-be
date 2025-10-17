@@ -6,19 +6,26 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AUTH_SERVICE, JwtTcpGuard, RolesGuard, TCP_DEFAULT_HOST } from '@app/common';
 import { DatabaseModule } from '@app/database';
 
-import { EmployeeController } from './employee.controller';
+import { EmployeeAdminController } from './employee-admin.controller';
+import { EmployeeRpcController } from './employee-rpc.controller';
+import { EmployeeSelfController } from './employee-self.controller';
 import { EmployeeService } from './employee.service';
-import { Employee } from './entities/employee.entity';
+import { EmployeeProfile } from './entities/employee.entity';
+import { ProfileChangeLog } from './entities/profile-change-log.entity';
+import { FirebaseAdminService } from './firebase/firebase-admin.service';
+import { PhotoStorageService } from './storage/photo-storage.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     DatabaseModule.forRoot(),
-    TypeOrmModule.forFeature([Employee]),
+    TypeOrmModule.forFeature([EmployeeProfile, ProfileChangeLog]),
   ],
-  controllers: [EmployeeController],
+  controllers: [EmployeeAdminController, EmployeeSelfController, EmployeeRpcController],
   providers: [
     EmployeeService,
+    FirebaseAdminService,
+    PhotoStorageService,
     JwtTcpGuard,
     RolesGuard,
     {
