@@ -6,17 +6,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AUTH_SERVICE, JwtTcpGuard, RolesGuard, TCP_DEFAULT_HOST } from '@app/common';
 import { DatabaseModule } from '@app/database';
 
-import { AttendanceController } from './attendance.controller';
+import { AttendanceAdminController } from './attendance-admin.controller';
+import { AttendanceHttpController } from './attendance-http.controller';
+import { AttendanceRpcController } from './attendance-rpc.controller';
 import { AttendanceService } from './attendance.service';
-import { AttendanceRecord } from './entities/attendance-record.entity';
+import { Attendance } from './entities/attendance.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     DatabaseModule.forRoot(),
-    TypeOrmModule.forFeature([AttendanceRecord]),
+    TypeOrmModule.forFeature([Attendance]),
   ],
-  controllers: [AttendanceController],
+  controllers: [AttendanceHttpController, AttendanceAdminController, AttendanceRpcController],
   providers: [
     AttendanceService,
     JwtTcpGuard,
