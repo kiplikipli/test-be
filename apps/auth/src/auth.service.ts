@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createHmac, timingSafeEqual } from 'crypto';
@@ -17,7 +17,7 @@ interface JwtPayload {
 }
 
 @Injectable()
-export class AuthService implements OnModuleInit {
+export class AuthService {
   private readonly jwtSecret: string;
   private readonly tokenTtlSeconds: number;
 
@@ -29,18 +29,6 @@ export class AuthService implements OnModuleInit {
     this.jwtSecret = configService.get<string>('JWT_SECRET', 'change-me');
     const ttl = configService.get<string>('JWT_TTL_SECONDS');
     this.tokenTtlSeconds = ttl ? Number(ttl) : 3600;
-  }
-
-  async onModuleInit(): Promise<void> {
-    const totalUsers = await this.usersRepository.count();
-    if (totalUsers === 0) {
-      const admin = this.usersRepository.create({
-        email: 'admin@example.com',
-        password: 'password',
-        roles: [Role.ADMIN],
-      });
-      await this.usersRepository.save(admin);
-    }
   }
 
   async login(dto: LoginDto): Promise<{ accessToken: string; user: AuthenticatedUser }> {
